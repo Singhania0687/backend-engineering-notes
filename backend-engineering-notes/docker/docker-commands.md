@@ -90,7 +90,6 @@ MacOS
             ❌ Does NOT remove:
              Tagged images
              Images used by any container (running or stopped)
-
              ```
 
 - Docker container prune
