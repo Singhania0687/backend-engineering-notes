@@ -84,7 +84,7 @@ MacOS
 ---
 
 ## Docker prune
-
+---
 - Docker image prune
   
                 ✔ Removes ONLY dangling images
@@ -92,14 +92,36 @@ MacOS
                 Tagged images
                 Images used by any container (running or stopped)
  
-             
-
+          
+---
 - Docker container prune
-         ```
-         ```
+          ✔ Removes:
+          Stopped containers
+          ❌ Does NOT remove:
+          Running containers
+---
 - Docker System prune
+         ✔ Removes:
+         Dangling images
+         Stopped containers
+         Unused networks
+         Build cache
+         ❌ Does NOT remove:
+         Volumes
+         Images used by containers
+---               
 - Docker Network prune
-- Docker 
+         ✔ Removes:
+           Unused networks
+ ---          
+- Docker Volume prune
+        ✔ Removes:
+        Unused volumes
+        ❌ Does NOT remove:
+        Volumes attached to any container
+       📌 Volumes often store database data, so this can cause data loss.
+
+---
                   
 
 
