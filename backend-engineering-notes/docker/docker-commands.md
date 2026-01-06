@@ -1,5 +1,6 @@
+#    Docker Commands  
 ```
-     Docker is a platform that allows us to run applications in isolated containers using the host machine’s CPU, memory, and OS kernel, which helps eliminate the “it works on my machine” problem by providing consistent runtime environments.
+    Docker is a platform that allows us to run applications in isolated containers using the host machine’s CPU   memory, and OS kernel, which helps eliminate the “it works on my machine” problem by providing consistent  runtime  environments.
 
 ```
 
@@ -57,6 +58,49 @@ MacOS
    - Containers run inside a Linux VM
    - Still share the Linux kernel
    - Ports are forwarded:
+
+---
+
+### dangling images:-
+
+ A dangling image is an image that:
+- Has no tag
+- Is shown as <none>:<none> in docker images
+- Is not directly usable by name or tag
+
+## 'Importnace of tag :- The tag is what makes the image usable and referenceable '
+
+* How dangling pointer get created :-
+  - 1. Rebuilding an image with the same name:tag
+         - If myapp:latest already existed:
+               The old image loses its tag
+                       It becomes <none>:<none> (dangling)
+
+  - 2. Docker creates temporary images during builds.
+             If they’re no longer referenced → dangling.
+
+---
+
+## Docker prune
+
+- Docker image prune
+            ```
+            ✔ Removes ONLY dangling images
+
+            ❌ Does NOT remove:
+             Tagged images
+             Images used by any container (running or stopped)
+
+             ```
+
+- Docker container prune
+         ```
+         ```
+- Docker System prune
+- Docker Network prune
+- Docker 
+                  
+
 
 
 
