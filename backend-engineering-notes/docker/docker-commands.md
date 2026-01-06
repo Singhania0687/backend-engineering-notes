@@ -1,11 +1,13 @@
 #    Docker Commands  
 ```
-    Docker is a platform that allows us to run applications in isolated containers using the host machine’s CPU   memory, and OS kernel, which helps eliminate the “it works on my machine” problem by providing consistent  runtime  environments.
+Docker is a platform that allows us to run applications in isolated containers using
+the host machine’s CPU memory, and OS kernel, which helps eliminate the “it works on my machine”
+ problem by providing consistent  runtime  environments.
 
 ```
+---
 
-
-### docker run  -it --name "name which we want to call our container" "actual name of the image"
+## docker run  -it --name "name which we want to call our container" "actual name of the image"
 
 - Here our local terminal get connected to the main process of the container
 - it will start the container and attaches tty 
@@ -15,9 +17,9 @@
           └── bash (PID 1)
               └── exit → container stops
  ```
+---
 
-
-### docker exec -it docker_container_name '/bin/bash or other shells '
+## docker exec -it docker_container_name '/bin/bash or other shells '
 
 - Now we can run any other process inside our already running containers
 ```
@@ -26,8 +28,8 @@
              └── exit → container still running
 
 ```
-
-### providing memory and cpus to the container
+---
+## providing memory and cpus to the container
 
  * Docker:
     - Uses host CPU
@@ -84,13 +86,13 @@ MacOS
 ## Docker prune
 
 - Docker image prune
-            ```
-            ✔ Removes ONLY dangling images
-
-            ❌ Does NOT remove:
-             Tagged images
-             Images used by any container (running or stopped)
-             ```
+  
+                ✔ Removes ONLY dangling images
+                ❌ Does NOT remove:
+                Tagged images
+                Images used by any container (running or stopped)
+ 
+             
 
 - Docker container prune
          ```
