@@ -95,12 +95,14 @@ MacOS
           
 ---
 - Docker container prune
+  
           ✔ Removes:
           Stopped containers
           ❌ Does NOT remove:
           Running containers
 ---
 - Docker System prune
+  
          ✔ Removes:
          Dangling images
          Stopped containers
@@ -111,10 +113,12 @@ MacOS
          Images used by containers
 ---               
 - Docker Network prune
+  
          ✔ Removes:
            Unused networks
  ---          
 - Docker Volume prune
+  
         ✔ Removes:
         Unused volumes
         ❌ Does NOT remove:
