@@ -311,4 +311,320 @@ inside `events {}`
 ---
 
 
+## Treasure Chest 
+---
+
+## ✅ Correct Mental Model (Simple & Clean)
+
+### 🔹 **Main context**
+
+👉 **Controls Nginx as a whole**
+
+* Global settings
+* Process management
+* Worker creation
+* Security (`user`)
+* Logging
+
+📌 *Does NOT handle traffic directly*
+
+---
+
+### 🔹 **Events block**
+
+👉 **Controls how connections are handled**
+
+* How many connections
+* Event-driven mechanism
+* Low-level networking behavior
+
+📌 *Connection handling, not request logic*
+
+---
+
+### 🔹 **HTTP block**
+
+👉 **Handles HTTP requests**
+
+* Websites
+* APIs
+* Routing
+* Reverse proxy
+* Load balancing (HTTP)
+
+📌 *This is where real web logic lives*
+
+---
+
+## 🧠 One-Line Summary (Perfect)
+
+> **Main manages Nginx itself, events manage connections, and http manages requests.**
+
+---
+
+## 🔗 Putting It Together (Visual)
+
+```
+Main (Nginx control)
+ ├── Events (Connections)
+ └── HTTP (Requests)
+      └── Server (Virtual hosts)
+           └── Location (URL handling)
+```
+
+---
+
+## ❗ Small but Important Note
+
+* **Connections ≠ Requests**
+* A single connection can handle **multiple HTTP requests** (keep-alive)
+
+---
+
+
+## Protocols supported by NGINX are :-
+
+Nginx officially supports **three main protocol contexts**:
+
+## 1️⃣ `http`
+
+* For **web traffic** (HTTP/HTTPS)
+* Handles:
+
+  * Websites
+  * REST APIs
+  * Reverse proxy & load balancing
+* Uses blocks like `server` and `location`
+
+```nginx
+http {
+    server {
+        listen 80;
+    }
+}
+```
+
+---
+
+## 2️⃣ `stream`
+
+* For **TCP/UDP traffic**
+* Handles:
+
+  * MySQL, Redis, SSH, MQTT, any TCP/UDP service
+* Uses blocks like `server` inside `stream`
+
+```nginx
+stream {
+    server {
+        listen 3306;
+        proxy_pass 127.0.0.1:3306;
+    }
+}
+```
+
+---
+
+## 3️⃣ `mail`
+
+* For **email protocols**
+* Handles:
+
+  * SMTP, IMAP, POP3
+* Less commonly used
+
+```nginx
+mail {
+    server {
+        listen 25;
+        protocol smtp;
+    }
+}
+```
+
+---
+
+### ❌ Notes:
+
+* You **cannot define arbitrary protocols**; only these three are officially supported.
+* `main` and `events` are **not protocols**, they are contexts for configuration.
+* Each protocol has its **own top-level block**, just like `http`.
+
+---
+
+### 🔗 Summary Table
+
+| Context | Handles                          |
+| ------- | -------------------------------- |
+| main    | Global Nginx settings            |
+| events  | Connections & worker behavior    |
+| http    | HTTP/HTTPS requests              |
+| stream  | TCP/UDP traffic                  |
+| mail    | Email protocols (SMTP/IMAP/POP3) |
+
+---
+##  Nginx Directives
+
+## 1️⃣ `proxy_pass`
+
+### **What it does:**
+
+It tells NGINX **where to forward the request** — basically your **backend server**.
+
+### **Use case:**
+
+You have a Node.js API running on `localhost:3000`.
+Client requests come to NGINX at `/api`. You want NGINX to forward all `/api` requests to Node.js.
+
+```nginx
+location /api {
+    proxy_pass http://localhost:3000;
+}
+```
+
+**Mental hook:**
+
+> “Client talks to NGINX, NGINX talks to backend.”
+> **proxy_pass = ‘backend address’**
+
+---
+
+## 2️⃣ `proxy_set_header`
+
+### **What it does:**
+
+Adds or overwrites HTTP headers when NGINX forwards a request.
+
+### **Use case:**
+
+* Node.js wants **real client IP**, not NGINX’s IP.
+* Node.js wants **host info** to route requests correctly.
+
+```nginx
+proxy_set_header Host $host;
+proxy_set_header X-Real-IP $remote_addr;
+proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+```
+
+**Memory hook:**
+
+> “When proxying, NGINX can fake or forward headers. These three headers are must-have.”
+
+* `$host` → domain requested
+* `$remote_addr` → client IP
+* `$proxy_add_x_forwarded_for` → preserves chain of IPs
+
+💡 **Think:** Every time your backend logs IP → this is why it works.
+
+---
+
+## 3️⃣ `proxy_http_version`
+
+### **What it does:**
+
+Sets which HTTP version NGINX uses to talk to the backend.
+
+```nginx
+proxy_http_version 1.1;
+```
+
+**Use case:**
+
+* WebSocket or chunked transfer requires **HTTP/1.1**.
+* Default is **1.0**, which can break modern APIs.
+
+**Memory hook:**
+
+> “If you use proxy_pass + WebSocket → must tell NGINX: use HTTP/1.1”
+
+---
+
+## 4️⃣ `proxy_read_timeout`
+
+### **What it does:**
+
+Max time NGINX waits **for the backend to send a response** after connection is established.
+
+```nginx
+proxy_read_timeout 30s;
+```
+
+**Use case:**
+
+* Node.js API takes 25 seconds to respond → default timeout may cut it off.
+* Set `proxy_read_timeout` longer than your slowest expected API.
+
+**Memory hook:**
+
+> “How long do I wait for the answer? → proxy_read_timeout”
+
+---
+
+## 5️⃣ `proxy_connect_timeout`
+
+### **What it does:**
+
+Max time NGINX waits **to establish connection with backend**.
+
+```nginx
+proxy_connect_timeout 5s;
+```
+
+**Use case:**
+
+* Backend is down or unreachable → timeout after 5 seconds instead of hanging forever.
+* Protects NGINX workers from getting stuck.
+
+**Memory hook:**
+
+> “How long to knock on backend door? → proxy_connect_timeout”
+
+---
+
+## 6️⃣ `proxy_send_timeout`
+
+### **What it does:**
+
+Max time NGINX waits **to send the request to the backend**.
+
+```nginx
+proxy_send_timeout 10s;
+```
+
+**Use case:**
+
+* Backend is slow to read incoming request → NGINX aborts after timeout.
+* Protects your server in case backend is overloaded.
+
+**Memory hook:**
+
+> “How long do I take to hand over the request? → proxy_send_timeout”
+
+---
+
+## ✅ Quick Mental Map to Remember
+
+| Directive               | Think “What question does it answer?”             |
+| ----------------------- | ------------------------------------------------- |
+| `proxy_pass`            | Where do I send this request?                     |
+| `proxy_set_header`      | What info should backend know about client?       |
+| `proxy_http_version`    | Which HTTP version should I speak to backend?     |
+| `proxy_read_timeout`    | How long will I wait for backend’s answer?        |
+| `proxy_connect_timeout` | How long do I try to connect to backend?          |
+| `proxy_send_timeout`    | How long will I spend sending request to backend? |
+
+---
+
+### 🧠 Memory Trick (Sticky)
+
+**Sentence:**
+
+> “I **pass** the request (`proxy_pass`) with the **right headers** (`proxy_set_header`) using HTTP/1.1 (`proxy_http_version`), wait some time to **connect** (`proxy_connect_timeout`), **send** the request (`proxy_send_timeout`), and finally **wait for response** (`proxy_read_timeout`).”
+
+---
+
+
+
+
+
 
