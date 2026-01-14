@@ -4,7 +4,7 @@ This repository contains my hands-on backend engineering practice including:
 
 - Bash scripts used in real backend workflows
 - Docker & Docker Compose setups
-- Linux command usage and internals
+- <a href="https://github.com/Singhania0687/backend-engineering-notes/blob/main/backend-engineering-notes/linux/Basic_commands.md">Linux command usage and internals</a>
 - Redis, MongoDB, SQL fundamentals
 - Networking and system design concepts
 
