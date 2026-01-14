@@ -12,6 +12,9 @@ ls -la         # detailed + hidden files
 cd /path       # move
 cd ..          # one level up
 cd ~           # home
+tree
+stat file
+file file
 ```
 
 ### 📄 Create / Delete
@@ -31,6 +34,8 @@ rm -rf dir         # ⚠️ force delete (be careful)
 cp a.txt b.txt
 cp -r dir1 dir2
 mv old new
+watch command    # To have continous watch over the command
+
 ```
 
 💡 **Use case**: managing project files, build outputs, logs
