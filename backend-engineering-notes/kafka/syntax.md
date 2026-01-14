@@ -3,7 +3,7 @@
 
 # 1️⃣ Kafka Producer – General Syntax 
 
-### Producer flow (always the same)
+### Producer flow  
 
 ```
 1. Create Kafka client
